@@ -1,0 +1,50 @@
+/* 整体的盒子 */
+.box {
+  width: 600px;
+  height: 400px;
+  /* background: green; */
+  margin: 100px auto;
+  display: flex;
+  border: 1px solid #ccc;
+}
+/* 用户列表 */
+.users {
+  width: 30%;
+  height: 100%;
+  background-color: pink;
+}
+/* 右侧 */
+.right {
+  width: 70%;
+  height: 100%;
+}
+/* 聊天内容 */
+.msgBox {
+  width: 100%;
+  height: 60%;
+  background-color: yellow;
+}
+/* 输入框 */
+.inputBox {
+  position: relative;
+  height: 40%;
+}
+.inputBox textarea {
+  width: 100%;
+  height: 100%;
+  border: 1px solid #ccc;
+}
+.inputBox button {
+  width: 100px;
+  height: 30px;
+  border: none;
+  border-radius: 5px;
+  position: absolute;
+  bottom: 16px;
+  right: 16px;
+  color: rgb(51, 174, 87);
+  background-color: #ded8d8f6;
+}
+.inputBox button:hover {
+  background-color: rgba(210, 210, 210, 0.437);
+}

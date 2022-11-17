@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="./mycss/reset.css">
+  <link rel="stylesheet" href="./mycss/index.css">
+</head>
+
+<body>
+  <div class="box">
+    <div class="users"></div>
+    <div class="right">
+      <ul class="msgBox"></ul>
+      <div class="inputBox">
+        <textarea name="" id="" cols="30" rows="6" placeholder="请输入内容"></textarea>
+        <br>
+        <button class="btn">点我发送</button>
+      </div>
+    </div>
+  </div>
+
+</body>
+<script>
+  const ws = new WebSocket('ws://localhost:8000')
+  const input = document.querySelector('.inputBox textarea')
+  const btn = document.querySelector('.btn')
+  const ul = document.querySelector('.msgBox')
+  // 绑定按钮事件
+  btn.addEventListener('click', function () {
+    sendMsg(input.value)
+  })
+  // 给input框绑定键盘事件
+  input.addEventListener('keydown', function (key) {
+    if (key.keyCode === 13) {
+      sendMsg(input.value)
+    }
+  })
+  // ws监听消息事件
+  ws.onmessage = (msg) => {
+    console.log('接收到了消息', msg.data)
+    const li = document.createElement('li')
+    li.innerText = msg.data
+    ul.appendChild(li)
+  }
+  // ws监听异常事件
+  ws.onerror = (err) => {
+    console.log('服务器异常', err)
+    alert('您与服务器断开了连接')
+  }
+  ws.onopen = (e) => {
+    console.log('建立了连接')
+  }
+  function sendMsg (msg) {
+    if (msg === '') {
+      alert('发送内容不能为空')
+      return
+    }
+    ws.send(msg)
+  }
+</script>
+
+</html>
