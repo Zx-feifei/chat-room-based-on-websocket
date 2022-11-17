@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" href="./css/base.css">
+  <style>
+    .box {
+      width: 600px;
+      height: 420px;
+      margin: 100px auto;
+      background-color: rgb(210, 214, 217);
+      opacity: 0.8;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+    }
+
+    header {
+      width: 100%;
+      height: 20%;
+      border-bottom: 1px solid #ccc;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    header input[type=text] {
+      width: 60%;
+      height: 40%;
+      text-indent: 20px;
+      outline: none;
+      border-radius: 4px;
+      ;
+    }
+
+    header input[type=text]:focus {
+      border: none;
+    }
+
+    main {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+
+    main ul {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      /* background-color: pink; */
+    }
+
+    main ul img {
+      width: 120px;
+      height: 120px;
+      border-radius: 50%;
+      margin: 6px;
+      border: 1px solid #ccc;
+    }
+
+    footer {
+      /* margin-top: 20px; */
+      width: 100%;
+    }
+
+    footer .confirm {
+      width: 100px;
+      height: 40px;
+      margin: 0 auto;
+      text-align: center;
+      line-height: 40px;
+      border-radius: 5px;
+      color: #fff;
+      cursor: pointer;
+      background-color: blue;
+    }
+
+    .imgSelect {
+      border-radius: 10px;
+      background-color: rgb(59, 223, 59);
+    }
+
+    footer .confirm:hover {
+      background: green;
+    }
+  </style>
+</head>
+
+
+<body>
+  <div class="box">
+    <header>
+      <input type="text" placeholder="为您的角色起一个好听的名字" onfocus="this.placeholder= ''"
+        onblur="this.placeholder='为您的角色起一个好听的名字'">
+    </header>
+    <main>
+      <ul>
+        <li><img src="./images/face/face1.webp" alt=""></li>
+        <li><img src="./images/face/face2.webp" alt=""></li>
+        <li><img src="./images/face/face3.webp" alt=""></li>
+        <li><img src="./images/face/face4.webp" alt=""></li>
+        <li><img src="./images/face/face5.webp" alt=""></li>
+        <li><img src="./images/face/face6.webp" alt=""></li>
+        <li><img src="./images/face/face7.webp" alt=""></li>
+        <li><img src="./images/face/face8.webp" alt=""></li>
+      </ul>
+    </main>
+    <footer>
+      <div class="confirm">进入聊天</div>
+    </footer>
+  </div>
+</body>
+<script>
+  const input = document.querySelector('header input[type=text]')
+  const imgs = document.querySelectorAll('main li')
+  const enter = document.querySelector('footer .confirm')
+  // 选择的第几张图片
+  let imgIndex = 0
+  // 给每个li添加点击事件
+  imgs.forEach((li, index) => {
+    li.addEventListener('click', (e) => {
+      console.log('绑定的事件')
+      imgIndex = index + 1
+      // 移除兄弟节点的选择类
+      Array.from(li.parentNode.children).forEach(lis => {
+        lis.classList.remove('imgSelect')
+      })
+      li.classList.toggle('imgSelect')
+
+    })
+  })
+
+  enter.addEventListener('click', function () {
+    const name = input.value
+    if (!name) {
+      alert('用户名不能为空')
+      return
+    }
+    window.location.href = `./index.html?name=${name}&img=${imgIndex}`
+  })
+</script>
+
+</html>

@@ -10,6 +10,11 @@ const ul = document.querySelector('.message-wrapper ul')
 const nullInputDesc = document.querySelector('.warn')
 // 获取表情盒子
 const enjoyBox = document.querySelector('.emojiBox')
+// 获取头像DOM
+const avatar = document.querySelector('header img')
+let loginName = '赵日天'
+let imgIndex = 0
+let getImgIndex = 0
 // 初始化讨论组成员
 const groupPerson = {
   'aa': './images/face/face1.webp',
@@ -19,6 +24,20 @@ const groupPerson = {
   'ee': './images/face/face5.webp',
   'ff': './images/face/face6.webp',
   'gg': './images/face/face0.webp'
+}
+let params = location.search
+if (params) {
+  let keyValue = params.slice(1)?.split('&')
+  let result = {}
+  keyValue.forEach(item => {
+    re = item.split('=')
+    result[re[0]] = re[1]
+  })
+  // 保存当前登录的用户名
+  loginName = result['name']
+  imgIndex = result['img']
+  // 设置左上角登录图像
+  avatar.src = `./images/face/face${imgIndex}.webp`
 }
 
 // 绑定按钮事件
@@ -41,7 +60,11 @@ ws.onopen = (e) => {
 }
 // ws监听消息事件
 ws.onmessage = (msg) => {
-  createEleLi(false, msg.data)
+  console.log(msg)
+  let ms = JSON.parse(msg.data)
+  console.log(Object.keys(ms))
+  let imgInde = ms.imgIndex
+  createEleLi(false, msg.data, imgInde)
 
 }
 // ws监听异常事件
@@ -60,9 +83,15 @@ function sendMsg (msg) {
     nullInputDesc.style.display = 'block'
     return
   }
-  ws.send(msg)
+  let sendInfo = {
+    from: loginName,
+    imgIndex,
+    to: 'group',
+    msg,
+    time: formatTime()
+  }
+  ws.send(JSON.stringify(sendInfo))
   createEleLi(true, msg)
-
 }
 // 日期格式化函数
 function formatTime () {
@@ -75,13 +104,13 @@ function formatTime () {
 }
 // 当接收到消息和发送消息后都创建li标签
 // 默认为我发的消息
-function createEleLi (me = true, msg = '') {
+function createEleLi (me = false, msg = '', imgInde = 0) {
   const li = document.createElement('li')
   li.classList.add('message-item')
   let msgTime = formatTime()
   let template = `
   <div class="time"><span>${msgTime}</span></div>
-  <div class="message-main ${me ? 'self' : ''}"><img width="36" height="36" src="./images/face/face${me ? '0' : '1'}.webp" class="avatar">
+  <div class="message-main ${me ? 'self' : ''}"><img width="36" height="36" src="./images/face/face${me ? imgIndex : imgInde}.webp" class="avatar">
     <div class="content">
       <div class="text">${msg}</div>
     </div>
