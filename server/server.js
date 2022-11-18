@@ -11,12 +11,6 @@ const groupPerson = {
   'ff': ['ff123', './images/face/face6.webp'],
   'gg': ['gg123', './images/face/face0.webp']
 }
-// app.get('/login', (req, res) => {
-//   console.log(req.query)
-// })
-// app.listen(8001, function () {
-//   console.log('express is listen on 8001')
-// })
 // 连接的数组
 const connectList = []
 // 建立连接通道

@@ -51,6 +51,7 @@ btn.addEventListener('click', function () {
 input.addEventListener('keydown', function (key) {
   if (key.keyCode === 13) {
     sendMsg(input.value)
+    return
   }
 })
 // 给输入框绑定焦点事件，获得焦点之后 输入不能为空取消显示
@@ -63,11 +64,11 @@ ws.onopen = (e) => {
 }
 // ws监听消息事件
 ws.onmessage = (msg) => {
-  console.log(msg)
+  // console.log(msg)
+  console.log(msg.data)
   let ms = JSON.parse(msg.data)
-  console.log(Object.keys(ms))
   let imgInde = ms.imgIndex
-  createEleLi(false, msg.data, imgInde)
+  createEleLi(false, ms.msg, imgInde)
 
 }
 // ws监听异常事件
@@ -109,9 +110,9 @@ function formatTime () {
   // 将时间格式转化为分钟判断
   const nowAddMinute = parseInt(hour) * 60 + parseInt(minute)
   const lastAddMinute = parseInt(lastHour) * 60 + parseInt(lastMinute)
-  // if (nowAddMinute - lastAddMinute > 5) {
-  //   return hour + ':' + minute
-  // }
+  if (nowAddMinute - lastAddMinute > 3) {
+    return hour + ':' + minute
+  }
   return ''
   // 如果距离上次发送消息时间在10分钟以内则不显示发送时间
 
