@@ -41,7 +41,6 @@ const server = ws.createServer(conn => {
   // 监听关闭事件
   conn.on('close', function (code, reason) {
     if (code == 1001) console.log('对方关闭了连接')
-    // console.log('当前连接被关闭！', code, reason)
     // 关闭将当前连接通道移除
     connectList.splice(connectList.indexOf(conn), 1)
   })

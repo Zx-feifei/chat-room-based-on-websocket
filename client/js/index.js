@@ -51,7 +51,9 @@ btn.addEventListener('click', function () {
 input.addEventListener('keydown', function (key) {
   if (key.keyCode === 13) {
     sendMsg(input.value)
-    return
+    // 如果按下回车但是没有内容就提示，并让输入框失去焦点，防止误触enter
+    // input.blur()
+    key.preventDefault()
   }
 })
 // 给输入框绑定焦点事件，获得焦点之后 输入不能为空取消显示
@@ -64,11 +66,10 @@ ws.onopen = (e) => {
 }
 // ws监听消息事件
 ws.onmessage = (msg) => {
-  // console.log(msg)
-  console.log(msg.data)
+  // console.log(msg.data)
   let ms = JSON.parse(msg.data)
   let imgInde = ms.imgIndex
-  createEleLi(false, ms.msg, imgInde)
+  createEleLi(false, ms.msg, imgInde, ms.from)
 
 }
 // ws监听异常事件
@@ -120,18 +121,22 @@ function formatTime () {
 }
 // 当接收到消息和发送消息后都创建li标签
 // 默认为我发的消息
-function createEleLi (me = false, msg = '', imgInde = 0) {
+function createEleLi (me = false, msg = '', imgInde = 0, nickname) {
   const li = document.createElement('li')
   li.classList.add('message-item')
   let msgTime = formatTime()
   let template = `
-  <div class="time" style="display:${msgTime ? 'block' : 'none'}"><span>${msgTime}</span></div>
+  <div class="time" style="visibility:${msgTime ? 'visibility' : 'hidden'}"><span>${msgTime}</span></div>
   <div class="message-main ${me ? 'self' : ''}"><img width="36" height="36" src="./images/face/face${me ? imgIndex : imgInde}.webp" class="avatar">
+  <div class="nickName ${me ? 'my-name' : ''}">${nickname ?? loginName}</div>
     <div class="content">
       <div class="text">${msg}</div>
     </div>
   </div>
   `
+
+
+
   li.innerHTML = template
   ul.appendChild(li)
   input.value = ''

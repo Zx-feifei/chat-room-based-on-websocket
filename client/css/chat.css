@@ -127,7 +127,7 @@
   border-bottom: 1px solid #e7e7e7;
 }
 .container .chat-list .message .message-wrapper .message-item {
-  margin-top: 10px;
+  margin-top: 0 10px 20px 10px;
 }
 .container .chat-list .message .message-wrapper .message {
   margin-bottom: 15px;
@@ -294,4 +294,24 @@
 }
 .warn {
   display: none;
+}
+.container .chat-list .message .message-wrapper .message-main {
+  position: relative;
+  /* background: red; */
+}
+.message-main .my-name {
+  left: 464px;
+}
+.nickName {
+  position: absolute;
+  width: 40px;
+  height: 16px;
+  left: 12px;
+  top: -20px;
+  font-size: 12px;
+  transform: scale(0.75);
+  border-radius: 4px;
+  text-align: center;
+  line-height: 16px;
+  border: 1px solid #ccc;
 }
