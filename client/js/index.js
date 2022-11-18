@@ -12,6 +12,9 @@ const nullInputDesc = document.querySelector('.warn')
 const enjoyBox = document.querySelector('.emojiBox')
 // 获取头像DOM
 const avatar = document.querySelector('header img')
+// 发送消息的时间
+// const timeDi = document.querySelector('.message-wrapper ul')
+// 默认用户名是zrt,图片是旺仔
 let loginName = '赵日天'
 let imgIndex = 0
 let getImgIndex = 0
@@ -94,13 +97,25 @@ function sendMsg (msg) {
   createEleLi(true, msg)
 }
 // 日期格式化函数
+// console.log(ul.lastChild.innerHTML)
+
 function formatTime () {
   const d = new Date()
   let hour = d.getHours()
   let minute = d.getMinutes()
   hour = hour < 10 ? '0' + hour : hour
   minute = minute < 10 ? '0' + minute : minute
-  return hour + ':' + minute
+  let [lastMinute, lastHour] = ul.lastElementChild.querySelector('.time span')?.innerHTML?.split(':')
+  // 将时间格式转化为分钟判断
+  const nowAddMinute = parseInt(hour) * 60 + parseInt(minute)
+  const lastAddMinute = parseInt(lastHour) * 60 + parseInt(lastMinute)
+  // if (nowAddMinute - lastAddMinute > 5) {
+  //   return hour + ':' + minute
+  // }
+  return ''
+  // 如果距离上次发送消息时间在10分钟以内则不显示发送时间
+
+
 }
 // 当接收到消息和发送消息后都创建li标签
 // 默认为我发的消息
@@ -109,7 +124,7 @@ function createEleLi (me = false, msg = '', imgInde = 0) {
   li.classList.add('message-item')
   let msgTime = formatTime()
   let template = `
-  <div class="time"><span>${msgTime}</span></div>
+  <div class="time" style="display:${msgTime ? 'block' : 'none'}"><span>${msgTime}</span></div>
   <div class="message-main ${me ? 'self' : ''}"><img width="36" height="36" src="./images/face/face${me ? imgIndex : imgInde}.webp" class="avatar">
     <div class="content">
       <div class="text">${msg}</div>
