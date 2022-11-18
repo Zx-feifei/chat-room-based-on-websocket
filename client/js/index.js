@@ -84,7 +84,7 @@ function sendMsg (msg) {
     return
   }
   let sendInfo = {
-    from: loginName,
+    from: encodeURI(loginName),
     imgIndex,
     to: 'group',
     msg,

@@ -31,7 +31,10 @@ const server = ws.createServer(conn => {
       console.log(getInfo.from, getInfo.to, getInfo.msg, getInfo.imgIndex, getInfo.time)
       // let groupInfo = getInfo.msg
       connectList.forEach(connect => {
-        connect.sendText(JSON.stringify(getInfo))
+        // 不用对自己广播
+        if (connect !== conn) {
+          connect.sendText(JSON.stringify(getInfo))
+        }
       })
     }
   })
