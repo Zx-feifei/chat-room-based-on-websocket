@@ -13,24 +13,20 @@ const groupPerson = {
 }
 // 连接的数组
 const connectList = []
+// 连接用户数 
+let clientCount = 0
 // 建立连接通道
 const server = ws.createServer(conn => {
-  console.log('来了一个新用户')
-  // console.dir(conn)
-  // connectList.forEach(connect => {
-  //   // 不用对自己广播
-  //   if (connect !== conn) {
-  //     connect.sendText('有人上线了')
-  //   }
-  // })
+
   connectList.push(conn)
-  console.log(connectList.length)
+  let str = `房间来了第${connectList.length}个用户,当前共有${connectList.length}个用户在线`
   // 监听消息事件
+  console.log(str)
   conn.on('text', function (str) {
     let getInfo = JSON.parse(str)
     if (getInfo.to === 'group') {
       console.log('from:', getInfo.from, 'to:', getInfo.to, '说:', getInfo.msg, '头像:', getInfo.imgIndex, getInfo.time)
-      // let groupInfo = getInfo.msg
+      let groupInfo = getInfo.msg
       connectList.forEach(connect => {
         // 不用对自己广播
         if (connect !== conn) {
@@ -40,10 +36,6 @@ const server = ws.createServer(conn => {
     }
   })
 
-  // 监听连接事件
-  conn.on('connect', function (code) {
-    console.log('开启连接', code)
-  })
 
   // 监听关闭事件
   conn.on('close', function (code, reason) {
@@ -56,7 +48,14 @@ const server = ws.createServer(conn => {
     console.log('连接异常断开')
   })
 })
-
+function broadcast (connectList, conn) {
+  connectList.forEach(connect => {
+    // 不用对自己广播
+    if (connect !== conn) {
+      connect.sendText(JSON.stringify(getInfo))
+    }
+  })
+}
 // 监听8000端口
 server.listen(8000, function () {
   console.log('websocket is listening on port 8000')

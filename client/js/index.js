@@ -21,32 +21,49 @@ const avatar = document.querySelector('header img')
 // 默认用户名是zrt,图片是旺仔
 let loginName = '游客'
 let imgIndex = 11
-  // 当前登录用户的姓名以及头像 注意中文使用encodeURI
-  ; (function () {
-    let params = decodeURI(location.search).slice(1)
-    let keyValue = params?.split('&')
-    let result = {}
-    keyValue.forEach(item => {
-      re = item.split('=')
-      result[re[0]] = re[1]
-    })
-    // 保存当前登录的用户名
-    loginName = result['name']
-    imgIndex = result['img']
+const userListItem = {
+  name: loginName,
+  imgId: imgIndex,
+  intro: '可以找我聊天哦，快来吧！',
+  to: 'group',
+}
+// 当前登录用户的姓名以及头像 注意中文使用encodeURI
 
-    // 设置左上角登录图像
-    avatar.src = `./images/face/face${imgIndex ?? '11'}.webp`
-  }
-  )()
+function init () {
+  let params = decodeURI(location.search).slice(1)
+  let keyValue = params?.split('&')
+  let result = {}
+  keyValue.forEach(item => {
+    re = item.split('=')
+    result[re[0]] = re[1]
+  })
+  // 保存当前登录的用户名
+  // console.log(result['name'])
+  loginName = result['name'] ?? '游客'
+  imgIndex = result['img'] ?? '11'
+
+  // 设置左上角登录图像
+  avatar.src = `./images/face/face${imgIndex ?? '11'}.webp`
+  // 渲染emojiBox
+  let emojiArr = new Array(100).fill('./images/emoji/').map((item, index) => item + parseInt(index + 100) + '.gif')
+  emojiArr.forEach(src => {
+    const li = document.createElement('li')
+    const img = document.createElement('img')
+    img.setAttribute('src', src)
+    li.appendChild(img)
+    emojiBox.appendChild(li)
+  })
+}
+init()
 
 // 绑定按钮事件
 btn.addEventListener('click', function () {
-  sendMsg(input.value, loginName)
+  sendMsg(input.value,)
 })
 // 给input框绑定键盘事件
 input.addEventListener('keydown', function (key) {
   if (key.keyCode === 13) {
-    sendMsg(input.value, loginName)
+    sendMsg(input.value)
     // 如果按下回车但是没有内容就提示，并让输入框失去焦点，防止误触enter
     // input.blur()
     key.preventDefault()
@@ -68,17 +85,8 @@ emojiIcon.addEventListener('click', function () {
     emojiBox.style.visibility = 'hidden'
   }
 })
-  // 渲染emojiBox
-  ; (function () {
-    let emojiArr = new Array(100).fill('./images/emoji/').map((item, index) => item + parseInt(index + 100) + '.gif')
-    emojiArr.forEach(src => {
-      const li = document.createElement('li')
-      const img = document.createElement('img')
-      img.setAttribute('src', src)
-      li.appendChild(img)
-      emojiBox.appendChild(li)
-    })
-  })()
+
+
 // 单个表情点击
 emojiBox.addEventListener('click', function (e) {
   console.log(e)
@@ -86,6 +94,8 @@ emojiBox.addEventListener('click', function (e) {
 // ws监听连接事件
 ws.onopen = (e) => {
   console.log('建立了连接')
+  console.log(imgIndex, loginName)
+  ws.send(JSON.stringify(userListItem))
 }
 // ws监听消息事件
 ws.onmessage = (msg) => {
@@ -106,25 +116,23 @@ ws.onclose = () => {
 
 
 // Enter和btn都要发送消息，封装成函数
-function sendMsg (msg, loginName = '游客') {
+function sendMsg (msg, loginName = '游客', imgIndex = '11') {
   if (msg === '') {
     nullInputDesc.style.display = 'block'
     return
   }
-  console.log(loginName)
   let sendInfo = {
     from: loginName,
-    imgIndex,
     to: 'group',
     msg,
+    imgIndex,
     time: formatTime()
   }
   ws.send(JSON.stringify(sendInfo))
   createEleLi(true, msg)
 }
-// 日期格式化函数
-// console.log(ul.lastChild.innerHTML)
 
+// 日期格式化函数
 function formatTime () {
   const d = new Date()
   let hour = d.getHours()
@@ -158,9 +166,6 @@ function createEleLi (me = false, msg = '', imgInde = 11, nickname) {
     </div>
   </div>
   `
-
-
-
   li.innerHTML = template
   ul.appendChild(li)
   input.value = ''
