@@ -9,7 +9,9 @@ const ul = document.querySelector('.message-wrapper ul')
 // 获取发送为空的提示框
 const nullInputDesc = document.querySelector('.warn')
 // 获取表情盒子
-const enjoyBox = document.querySelector('.emojiBox')
+const emojiBox = document.querySelector('.emojiBox')
+// 表情选项
+const emojiIcon = document.querySelector('.emoji i')
 // 获取头像DOM
 const avatar = document.querySelector('header img')
 // 发送消息的时间
@@ -18,30 +20,23 @@ const avatar = document.querySelector('header img')
 let loginName = '赵日天'
 let imgIndex = 0
 let getImgIndex = 0
-// 初始化讨论组成员
-const groupPerson = {
-  'aa': './images/face/face1.webp',
-  'bb': './images/face/face2.webp',
-  'cc': './images/face/face3.webp',
-  'dd': './images/face/face4.webp',
-  'ee': './images/face/face5.webp',
-  'ff': './images/face/face6.webp',
-  'gg': './images/face/face0.webp'
-}
-let params = location.search
-if (params) {
-  let keyValue = params.slice(1)?.split('&')
-  let result = {}
-  keyValue.forEach(item => {
-    re = item.split('=')
-    result[re[0]] = re[1]
-  })
-  // 保存当前登录的用户名
-  loginName = result['name']
-  imgIndex = result['img']
-  // 设置左上角登录图像
-  avatar.src = `./images/face/face${imgIndex}.webp`
-}
+  // 当前登录用户的姓名以及头像 注意中文使用encodeURI
+  ; (function () {
+    let params = decodeURI(location.search).slice(1)
+    let keyValue = params?.split('&')
+    let result = {}
+    keyValue.forEach(item => {
+      re = item.split('=')
+      result[re[0]] = re[1]
+    })
+    // 保存当前登录的用户名
+    loginName = result['name']
+    imgIndex = result['img']
+
+    // 设置左上角登录图像
+    avatar.src = `./images/face/face${imgIndex}.webp`
+  }
+  )()
 
 // 绑定按钮事件
 btn.addEventListener('click', function () {
@@ -59,6 +54,33 @@ input.addEventListener('keydown', function (key) {
 // 给输入框绑定焦点事件，获得焦点之后 输入不能为空取消显示
 input.addEventListener('focus', function () {
   nullInputDesc.style.display = 'none'
+  emojiBox.style.visibility = 'hidden'
+})
+// 点击表情盒子显示
+emojiIcon.addEventListener('click', function () {
+  // console.log(emojiBox.style.visibility)
+  if (emojiBox.style.visibility === 'hidden') {
+    // console.log('hidden变为visible')
+    emojiBox.style.visibility = 'visible'
+  }
+  else if (emojiBox.style.visibility === 'visible') {
+    emojiBox.style.visibility = 'hidden'
+  }
+})
+  // 渲染emojiBox
+  ; (function () {
+    let emojiArr = new Array(100).fill('./images/emoji/').map((item, index) => item + parseInt(index + 100) + '.gif')
+    emojiArr.forEach(src => {
+      const li = document.createElement('li')
+      const img = document.createElement('img')
+      img.setAttribute('src', src)
+      li.appendChild(img)
+      emojiBox.appendChild(li)
+    })
+  })()
+// 单个表情点击
+emojiBox.addEventListener('click', function (e) {
+  console.log(e)
 })
 // ws监听连接事件
 ws.onopen = (e) => {
@@ -89,7 +111,7 @@ function sendMsg (msg) {
     return
   }
   let sendInfo = {
-    from: encodeURI(loginName),
+    from: loginName,
     imgIndex,
     to: 'group',
     msg,
@@ -126,7 +148,7 @@ function createEleLi (me = false, msg = '', imgInde = 0, nickname) {
   li.classList.add('message-item')
   let msgTime = formatTime()
   let template = `
-  <div class="time" style="visibility:${msgTime ? 'visibility' : 'hidden'}"><span>${msgTime}</span></div>
+  <div class="time" style="visibility:${msgTime ? 'visible' : 'hidden'}"><span>${msgTime}</span></div>
   <div class="message-main ${me ? 'self' : ''}"><img width="36" height="36" src="./images/face/face${me ? imgIndex : imgInde}.webp" class="avatar">
   <div class="nickName ${me ? 'my-name' : ''}">${nickname ?? loginName}</div>
     <div class="content">

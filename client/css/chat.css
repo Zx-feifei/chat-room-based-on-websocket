@@ -223,6 +223,7 @@
   border: 1px solid #d1d1d1;
   border-radius: 2px;
   box-shadow: 0 1px 2px 1px #d1d1d1;
+  overflow: auto;
 }
 .container .chat-list .send-text .emoji .emojiBox.showbox-enter-active,
 .container .chat-list .send-text .emoji .emojiBox.showbox-leave-active {
@@ -305,6 +306,7 @@
 .nickName {
   position: absolute;
   width: 40px;
+  overflow: hidden;
   height: 16px;
   left: 12px;
   top: -20px;
