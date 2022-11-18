@@ -10,6 +10,8 @@ const ul = document.querySelector('.message-wrapper ul')
 const nullInputDesc = document.querySelector('.warn')
 // 获取表情盒子
 const emojiBox = document.querySelector('.emojiBox')
+// 聊天用户列表
+const userList = document.querySelector('.msg-list ul')
 // 表情选项
 const emojiIcon = document.querySelector('.emoji i')
 // 获取头像DOM
@@ -17,9 +19,8 @@ const avatar = document.querySelector('header img')
 // 发送消息的时间
 // const timeDi = document.querySelector('.message-wrapper ul')
 // 默认用户名是zrt,图片是旺仔
-let loginName = '赵日天'
-let imgIndex = 0
-let getImgIndex = 0
+let loginName = '游客'
+let imgIndex = 11
   // 当前登录用户的姓名以及头像 注意中文使用encodeURI
   ; (function () {
     let params = decodeURI(location.search).slice(1)
@@ -34,18 +35,18 @@ let getImgIndex = 0
     imgIndex = result['img']
 
     // 设置左上角登录图像
-    avatar.src = `./images/face/face${imgIndex}.webp`
+    avatar.src = `./images/face/face${imgIndex ?? '11'}.webp`
   }
   )()
 
 // 绑定按钮事件
 btn.addEventListener('click', function () {
-  sendMsg(input.value)
+  sendMsg(input.value, loginName)
 })
 // 给input框绑定键盘事件
 input.addEventListener('keydown', function (key) {
   if (key.keyCode === 13) {
-    sendMsg(input.value)
+    sendMsg(input.value, loginName)
     // 如果按下回车但是没有内容就提示，并让输入框失去焦点，防止误触enter
     // input.blur()
     key.preventDefault()
@@ -105,11 +106,12 @@ ws.onclose = () => {
 
 
 // Enter和btn都要发送消息，封装成函数
-function sendMsg (msg) {
+function sendMsg (msg, loginName = '游客') {
   if (msg === '') {
     nullInputDesc.style.display = 'block'
     return
   }
+  console.log(loginName)
   let sendInfo = {
     from: loginName,
     imgIndex,
@@ -143,14 +145,14 @@ function formatTime () {
 }
 // 当接收到消息和发送消息后都创建li标签
 // 默认为我发的消息
-function createEleLi (me = false, msg = '', imgInde = 0, nickname) {
+function createEleLi (me = false, msg = '', imgInde = 11, nickname) {
   const li = document.createElement('li')
   li.classList.add('message-item')
   let msgTime = formatTime()
   let template = `
   <div class="time" style="visibility:${msgTime ? 'visible' : 'hidden'}"><span>${msgTime}</span></div>
-  <div class="message-main ${me ? 'self' : ''}"><img width="36" height="36" src="./images/face/face${me ? imgIndex : imgInde}.webp" class="avatar">
-  <div class="nickName ${me ? 'my-name' : ''}">${nickname ?? loginName}</div>
+  <div class="message-main ${me ? 'self' : ''}"><img width="36" height="36" src="./images/face/face${me ? imgIndex ?? '11' : imgInde}.webp" class="avatar">
+  <div class="nickName ${me ? 'my-name' : ''}">${nickname ?? loginName ?? '游客'}</div>
     <div class="content">
       <div class="text">${msg}</div>
     </div>

@@ -15,14 +15,21 @@ const groupPerson = {
 const connectList = []
 // 建立连接通道
 const server = ws.createServer(conn => {
-  // console.log('来了一个新用户')
+  console.log('来了一个新用户')
+  // console.dir(conn)
+  // connectList.forEach(connect => {
+  //   // 不用对自己广播
+  //   if (connect !== conn) {
+  //     connect.sendText('有人上线了')
+  //   }
+  // })
   connectList.push(conn)
   console.log(connectList.length)
   // 监听消息事件
   conn.on('text', function (str) {
     let getInfo = JSON.parse(str)
     if (getInfo.to === 'group') {
-      console.log(getInfo.from, getInfo.to, getInfo.msg, getInfo.imgIndex, getInfo.time)
+      console.log('from:', getInfo.from, 'to:', getInfo.to, '说:', getInfo.msg, '头像:', getInfo.imgIndex, getInfo.time)
       // let groupInfo = getInfo.msg
       connectList.forEach(connect => {
         // 不用对自己广播
@@ -46,7 +53,7 @@ const server = ws.createServer(conn => {
   })
   // 监听异常事件
   conn.on('error', function (code) {
-    console.log('连接异常断开', code)
+    console.log('连接异常断开')
   })
 })
 
