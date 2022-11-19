@@ -46,19 +46,18 @@ ws.onopen = (e) => {
   data.toSystem = true
   data.from = loginUser.loginName
   data.to = 'system'
+  data.time = new Date().toLocaleString().split('/').join('-')
   ws.send(JSON.stringify(data))
 }
 // ws监听消息事件
 ws.onmessage = (msg) => {
   let ms = JSON.parse(msg.data)
-  console.log(ms)
   // 不判断字符串是为了防止跟用户的名字冲突
   if (ms.toGroup && !ms.toSystem) {
     createEleLi(false, ms)
   }
   else if (ms.to === 'system' && ms.toSystem) {
     console.log('接收到了系统消息')
-    console.log(ms)
     createEleLi(false, ms)
   }
 }
