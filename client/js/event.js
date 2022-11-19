@@ -1,20 +1,21 @@
 // 绑定按钮事件
 btn.addEventListener('click', function () {
-  dataPacket.msg = input.value
-  dataPacket.from = loginUser.loginName
-  dataPacket.time = new Date().toLocaleTimeString()
-  dataPacket.fromImgId = loginUser.imgId
-  console.log('click时获取到的imgId')
-  sendMsg(dataPacket)
+  const data = Object.assign({}, dataPacket)
+  data.msg = input.value
+  data.from = loginUser.loginName
+  data.time = new Date().toLocaleTimeString()
+  data.fromImgId = loginUser.imgId
+  sendMsg(data)
 })
 // 给input框绑定键盘事件
 input.addEventListener('keydown', function (key) {
   if (key.keyCode === 13) {
-    dataPacket.msg = input.value
-    dataPacket.from = loginUser.loginName
-    dataPacket.time = new Date().toLocaleTimeString()
-    dataPacket.fromImgId = loginUser.imgId
-    sendMsg(dataPacket)
+    const data = Object.assign({}, dataPacket)
+    data.msg = input.value
+    data.from = loginUser.loginName
+    data.time = new Date().toLocaleTimeString()
+    data.fromImgId = loginUser.imgId
+    sendMsg(data)
     // 如果按下回车但是没有内容就提示，并让输入框失去焦点，防止误触enter
     key.preventDefault()
   }
@@ -41,24 +42,25 @@ emojiBox.addEventListener('click', function (e) {
 })
 // ws监听连接事件
 ws.onopen = (e) => {
-  console.log('建立了连接')
-  // const userItem = {
-  //   from: loginName,
-  //   imgId: imgIndex,
-  //   to: 'system',
-  //   intro: '',
-  //   time: new Date().toLocaleDateString()
-  // }
-  // console.log(userItem)
-  // ws.send(JSON.stringify(userItem))
+  const data = Object.assign({}, dataPacket)
+  data.toSystem = true
+  data.from = loginUser.loginName
+  data.to = 'system'
+  ws.send(JSON.stringify(data))
 }
 // ws监听消息事件
 ws.onmessage = (msg) => {
   let ms = JSON.parse(msg.data)
-  // console.log(ms)
-  console.log('接收到了消息', ms)
-  createEleLi(false, ms)
-
+  console.log(ms)
+  // 不判断字符串是为了防止跟用户的名字冲突
+  if (ms.toGroup && !ms.toSystem) {
+    createEleLi(false, ms)
+  }
+  else if (ms.to === 'system' && ms.toSystem) {
+    console.log('接收到了系统消息')
+    console.log(ms)
+    createEleLi(false, ms)
+  }
 }
 // ws监听异常事件
 ws.onerror = (err) => {

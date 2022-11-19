@@ -20,7 +20,7 @@ const avatar = document.querySelector('header img')
 
 // 统一数据包格式
 const dataPacket = {
-  from: '',
+  from: '游客',
   to: 'group',
   fromImgId: 'string',
   toImgId: '9999',

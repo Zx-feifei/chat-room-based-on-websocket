@@ -6,6 +6,7 @@ function sendMsg (info) {
     return
   }
   ws.send(JSON.stringify(info))
+  // 如果是自己发送的消息，则不需要传递第二个参数，也就是接收到的数据包，第一个参数默认为true
   createEleLi(true)
 }
 
@@ -35,26 +36,28 @@ function formatTime (flag = true) {
 function createEleLi (isMe, data) {
   const li = document.createElement('li')
   li.classList.add('message-item')
-  console.log(data)
+
   let template = ''
   // style="visibility:${msgTime ? 'visible' : 'hidden'}"
 
-  template = `
-    <div class="time" ><span>${new Date().toLocaleTimeString()}</span></div>
-    <div class="message-main ${isMe ? 'self' : ''}"><img width="36" height="36" src="./images/face/face${isMe ? loginUser.imgId : data.fromImgId}.webp" class="avatar">
-    <div class="nickName ${isMe ? 'my-name' : ''}">${isMe ? loginUser.loginName : data.from}</div>
-      <div class="content">
-        <div class="text">${isMe ? input.value : data.msg}</div>
-      </div>
+  if (data?.toGroup && !data?.toSystem && data?.to !== 'system') {
+    template = `
+  <div class="time" ><span>${new Date().toLocaleTimeString()}</span></div>
+  <div class="message-main ${isMe ? 'self' : ''}"><img width="36" height="36" src="./images/face/face${isMe ? loginUser.imgId : data.fromImgId}.webp" class="avatar">
+  <div class="nickName ${isMe ? 'my-name' : ''}">${isMe ? loginUser.loginName : data.from}</div>
+    <div class="content">
+      <div class="text">${isMe ? input.value : data.msg}</div>
     </div>
-    `
+  </div>
+  `
+  }
 
-  // else if (to === 'system') {
-  //   template = `
-  //   <div class="time"><span><strong
-  //     style="color:rgb(222, 85, 85);margin-right:4px;font-weight: bold;">${1}</strong>用户已上线</span>
-  //   </div>`
-  // }
+  else if (data?.toSystem && data?.to === 'system') {
+    template = `
+    <div class="time"><span><strong
+      style="color:rgb(222, 85, 85);margin-right:4px;font-weight: bold;">${data.from}</strong>用户已上线</span>
+    </div>`
+  }
   li.innerHTML = template
   ul.appendChild(li)
   input.value = ''

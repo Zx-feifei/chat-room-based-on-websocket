@@ -24,17 +24,15 @@ const server = ws.createServer(conn => {
   // 监听消息事件
   conn.on('text', function (str) {
     let getInfo = JSON.parse(str)
-    console.log(getInfo.toGroup)
-    if (getInfo.toGroup) {
-      console.log('需要广播的消息')
-      broadcast(conn, getInfo)
-      // conn.sendText(JSON.stringify(getInfo))
+    console.log(getInfo.toGroup, getInfo.toSystem)
+    if (getInfo.to === 'group') {
+      broadcast(false, conn, getInfo)
       console.log('消息发送了')
     }
-    // else if (getInfo.to === 'system') {
-    //   // broadcast(connectList, conn, getInfo)
-    //   console.log('系统收到了消息')
-    // }
+    else if (getInfo.to === 'system') {
+      broadcast(true, conn, getInfo)
+      console.log('系统收到了消息')
+    }
   })
 
 
@@ -49,13 +47,23 @@ const server = ws.createServer(conn => {
     console.log('连接异常断开')
   })
 })
-function broadcast (conn, getInfo) {
-  connectList.forEach(connect => {
-    // 不用对自己广播
-    if (connect !== conn) {
+function broadcast (includeMe = false, conn, getInfo) {
+  if (!includeMe) {
+    connectList.forEach(connect => {
+      // 不用对自己广播
+      if (connect !== conn) {
+        connect.sendText(JSON.stringify(getInfo))
+      }
+    })
+  }
+  // 不对自己广播
+  else {
+    connectList.forEach(connect => {
+      // 也要对自己广播
       connect.sendText(JSON.stringify(getInfo))
-    }
-  })
+
+    })
+  }
 }
 // 监听8000端口
 server.listen(8000, function () {
