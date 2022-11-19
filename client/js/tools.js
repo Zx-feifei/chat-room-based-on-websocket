@@ -5,9 +5,8 @@ function sendMsg (info) {
     nullInputDesc.style.display = 'block'
     return
   }
-  console.log(info)
   ws.send(JSON.stringify(info))
-  // createEleLi(true, to, msg, imgIndex)
+  createEleLi(true)
 }
 
 // 日期格式化函数
@@ -33,28 +32,28 @@ function formatTime (flag = true) {
 }
 // 当接收到消息和发送消息后都创建li标签
 // 默认为我发的消息
-function createEleLi (info) {
+function createEleLi (isMe, data) {
   const li = document.createElement('li')
   li.classList.add('message-item')
-  let msgTime = formatTime()
   let template = ''
-  if (info.toGroup) {
-    template = `
-    <div class="time" style="visibility:${msgTime ? 'visible' : 'hidden'}"><span>${info.time}</span></div>
-    <div class="message-main ${me ? 'self' : ''}"><img width="36" height="36" src="./images/face/face${me ? imgIndex : imgInde}.webp" class="avatar">
-    <div class="nickName ${me ? 'my-name' : ''}">${me ? loginName : '匿名'}</div>
+  // style="visibility:${msgTime ? 'visible' : 'hidden'}"
+
+  template = `
+    <div class="time" ><span>${new Date().toLocaleTimeString()}</span></div>
+    <div class="message-main ${isMe ? 'self' : ''}"><img width="36" height="36" src="./images/face/face${loginUser.imgId}.webp" class="avatar">
+    <div class="nickName ${isMe ? 'my-name' : ''}">${isMe ? loginUser.loginName : data.from}</div>
       <div class="content">
-        <div class="text">${msg}</div>
+        <div class="text">${isMe ? input.value : data.msg}</div>
       </div>
     </div>
     `
-  }
-  else if (to === 'system') {
-    template = `
-    <div class="time"><span><strong
-      style="color:rgb(222, 85, 85);margin-right:4px;font-weight: bold;">${1}</strong>用户已上线</span>
-    </div>`
-  }
+
+  // else if (to === 'system') {
+  //   template = `
+  //   <div class="time"><span><strong
+  //     style="color:rgb(222, 85, 85);margin-right:4px;font-weight: bold;">${1}</strong>用户已上线</span>
+  //   </div>`
+  // }
   li.innerHTML = template
   ul.appendChild(li)
   input.value = ''

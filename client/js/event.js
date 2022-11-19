@@ -11,6 +11,7 @@ input.addEventListener('keydown', function (key) {
     dataPacket.msg = input.value
     dataPacket.from = loginUser.loginName
     dataPacket.time = new Date().toLocaleString()
+    dataPacket.fromImgId = loginUser.imgId
     sendMsg(dataPacket)
     // 如果按下回车但是没有内容就提示，并让输入框失去焦点，防止误触enter
     key.preventDefault()
@@ -52,8 +53,9 @@ ws.onopen = (e) => {
 // ws监听消息事件
 ws.onmessage = (msg) => {
   let ms = JSON.parse(msg.data)
-  let imgInde = ms.imgIndex
-  // createEleLi(false, ms.msg, imgInde, ms.from)
+  // console.log(ms)
+  console.log('接收到了消息', ms)
+  createEleLi(false, ms)
 
 }
 // ws监听异常事件

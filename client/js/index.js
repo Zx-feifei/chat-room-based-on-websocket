@@ -22,7 +22,8 @@ const avatar = document.querySelector('header img')
 const dataPacket = {
   from: '',
   to: 'group',
-  imgId: 'string',
+  fromImgId: 'string',
+  toImgId: '9999',
   msg: '',
   toGroup: true,
   toSystem: false,

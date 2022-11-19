@@ -20,13 +20,16 @@ const server = ws.createServer(conn => {
 
   connectList.push(conn)
   let str = `房间来了第${connectList.length}个用户,当前共有${connectList.length}个用户在线`
+  console.log(str)
   // 监听消息事件
   conn.on('text', function (str) {
     let getInfo = JSON.parse(str)
-    console.log(getInfo)
+    console.log(getInfo.toGroup)
     if (getInfo.toGroup) {
-      // console.log('from:', getInfo.from, 'to:', getInfo.to, '说:', getInfo.msg, '头像:', getInfo.imgIndex, getInfo.time)
-      broadcast(connectList, conn, getInfo)
+      console.log('需要广播的消息')
+      // broadcast(conn, getInfo)
+      conn.sendText(JSON.stringify(getInfo))
+      console.log('消息发送了')
     }
     // else if (getInfo.to === 'system') {
     //   // broadcast(connectList, conn, getInfo)
@@ -46,7 +49,7 @@ const server = ws.createServer(conn => {
     console.log('连接异常断开')
   })
 })
-function broadcast (connectList, conn, getInfo) {
+function broadcast (conn, getInfo) {
   connectList.forEach(connect => {
     // 不用对自己广播
     if (connect !== conn) {
