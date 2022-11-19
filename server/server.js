@@ -27,8 +27,8 @@ const server = ws.createServer(conn => {
     console.log(getInfo.toGroup)
     if (getInfo.toGroup) {
       console.log('需要广播的消息')
-      // broadcast(conn, getInfo)
-      conn.sendText(JSON.stringify(getInfo))
+      broadcast(conn, getInfo)
+      // conn.sendText(JSON.stringify(getInfo))
       console.log('消息发送了')
     }
     // else if (getInfo.to === 'system') {

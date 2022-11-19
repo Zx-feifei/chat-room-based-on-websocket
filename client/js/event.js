@@ -2,7 +2,9 @@
 btn.addEventListener('click', function () {
   dataPacket.msg = input.value
   dataPacket.from = loginUser.loginName
-  dataPacket.time = new Date().toLocaleString()
+  dataPacket.time = new Date().toLocaleTimeString()
+  dataPacket.fromImgId = loginUser.imgId
+  console.log('click时获取到的imgId')
   sendMsg(dataPacket)
 })
 // 给input框绑定键盘事件
@@ -10,7 +12,7 @@ input.addEventListener('keydown', function (key) {
   if (key.keyCode === 13) {
     dataPacket.msg = input.value
     dataPacket.from = loginUser.loginName
-    dataPacket.time = new Date().toLocaleString()
+    dataPacket.time = new Date().toLocaleTimeString()
     dataPacket.fromImgId = loginUser.imgId
     sendMsg(dataPacket)
     // 如果按下回车但是没有内容就提示，并让输入框失去焦点，防止误触enter

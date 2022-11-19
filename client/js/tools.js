@@ -35,12 +35,13 @@ function formatTime (flag = true) {
 function createEleLi (isMe, data) {
   const li = document.createElement('li')
   li.classList.add('message-item')
+  console.log(data)
   let template = ''
   // style="visibility:${msgTime ? 'visible' : 'hidden'}"
 
   template = `
     <div class="time" ><span>${new Date().toLocaleTimeString()}</span></div>
-    <div class="message-main ${isMe ? 'self' : ''}"><img width="36" height="36" src="./images/face/face${loginUser.imgId}.webp" class="avatar">
+    <div class="message-main ${isMe ? 'self' : ''}"><img width="36" height="36" src="./images/face/face${isMe ? loginUser.imgId : data.fromImgId}.webp" class="avatar">
     <div class="nickName ${isMe ? 'my-name' : ''}">${isMe ? loginUser.loginName : data.from}</div>
       <div class="content">
         <div class="text">${isMe ? input.value : data.msg}</div>
