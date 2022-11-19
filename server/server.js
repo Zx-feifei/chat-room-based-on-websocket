@@ -21,20 +21,17 @@ const server = ws.createServer(conn => {
   connectList.push(conn)
   let str = `房间来了第${connectList.length}个用户,当前共有${connectList.length}个用户在线`
   // 监听消息事件
-  console.log(str)
   conn.on('text', function (str) {
     let getInfo = JSON.parse(str)
-    if (getInfo.to === 'group') {
-      console.log('from:', getInfo.from, 'to:', getInfo.to, '说:', getInfo.msg, '头像:', getInfo.imgIndex, getInfo.time)
-      // let groupInfo = getInfo.msg
+    console.log(getInfo)
+    if (getInfo.toGroup) {
+      // console.log('from:', getInfo.from, 'to:', getInfo.to, '说:', getInfo.msg, '头像:', getInfo.imgIndex, getInfo.time)
       broadcast(connectList, conn, getInfo)
-      // connectList.forEach(connect => {
-      //   // 不用对自己广播
-      //   if (connect !== conn) {
-      //     connect.sendText(JSON.stringify(getInfo))
-      //   }
-      // })
     }
+    // else if (getInfo.to === 'system') {
+    //   // broadcast(connectList, conn, getInfo)
+    //   console.log('系统收到了消息')
+    // }
   })
 
 
