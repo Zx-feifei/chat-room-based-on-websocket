@@ -26,13 +26,14 @@ const server = ws.createServer(conn => {
     let getInfo = JSON.parse(str)
     if (getInfo.to === 'group') {
       console.log('from:', getInfo.from, 'to:', getInfo.to, '说:', getInfo.msg, '头像:', getInfo.imgIndex, getInfo.time)
-      let groupInfo = getInfo.msg
-      connectList.forEach(connect => {
-        // 不用对自己广播
-        if (connect !== conn) {
-          connect.sendText(JSON.stringify(getInfo))
-        }
-      })
+      // let groupInfo = getInfo.msg
+      broadcast(connectList, conn, getInfo)
+      // connectList.forEach(connect => {
+      //   // 不用对自己广播
+      //   if (connect !== conn) {
+      //     connect.sendText(JSON.stringify(getInfo))
+      //   }
+      // })
     }
   })
 
@@ -48,7 +49,7 @@ const server = ws.createServer(conn => {
     console.log('连接异常断开')
   })
 })
-function broadcast (connectList, conn) {
+function broadcast (connectList, conn, getInfo) {
   connectList.forEach(connect => {
     // 不用对自己广播
     if (connect !== conn) {

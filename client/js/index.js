@@ -18,43 +18,34 @@ const emojiIcon = document.querySelector('.emoji i')
 const avatar = document.querySelector('header img')
 // 发送消息的时间
 // const timeDi = document.querySelector('.message-wrapper ul')
-// 默认用户名是zrt,图片是旺仔
-let loginName = '游客'
-let imgIndex = 11
-const userListItem = {
-  name: loginName,
-  imgId: imgIndex,
-  intro: '可以找我聊天哦，快来吧！',
-  to: 'group',
-}
+// 默认用户名是游客，头像是11
+// let loginName = '游客'
+// let imgIndex = '11'
+
 // 当前登录用户的姓名以及头像 注意中文使用encodeURI
 
-function init () {
-  let params = decodeURI(location.search).slice(1)
-  let keyValue = params?.split('&')
-  let result = {}
-  keyValue.forEach(item => {
-    re = item.split('=')
-    result[re[0]] = re[1]
-  })
-  // 保存当前登录的用户名
-  // console.log(result['name'])
-  loginName = result['name'] ?? '游客'
-  imgIndex = result['img'] ?? '11'
+let params = decodeURI(location.search).slice(1)
+let keyValue = params?.split('&')
+let result = {}
+keyValue.forEach(item => {
+  re = item.split('=')
+  result[re[0]] = re[1]
+})
+let loginName = result['name'] ?? '游客'
+let imgIndex = result['img'] ?? '11'
+// 设置左上角登录图像
+avatar.src = `./images/face/face${imgIndex}.webp`
+// 渲染emojiBox
+let emojiArr = new Array(100).fill('./images/emoji/').map((item, index) => item + parseInt(index + 100) + '.gif')
+emojiArr.forEach(src => {
+  const li = document.createElement('li')
+  const img = document.createElement('img')
+  img.setAttribute('src', src)
+  li.appendChild(img)
+  emojiBox.appendChild(li)
+})
 
-  // 设置左上角登录图像
-  avatar.src = `./images/face/face${imgIndex ?? '11'}.webp`
-  // 渲染emojiBox
-  let emojiArr = new Array(100).fill('./images/emoji/').map((item, index) => item + parseInt(index + 100) + '.gif')
-  emojiArr.forEach(src => {
-    const li = document.createElement('li')
-    const img = document.createElement('img')
-    img.setAttribute('src', src)
-    li.appendChild(img)
-    emojiBox.appendChild(li)
-  })
-}
-init()
+
 
 // 绑定按钮事件
 btn.addEventListener('click', function () {
@@ -63,7 +54,7 @@ btn.addEventListener('click', function () {
 // 给input框绑定键盘事件
 input.addEventListener('keydown', function (key) {
   if (key.keyCode === 13) {
-    sendMsg(input.value)
+    sendMsg(input.value, loginName, imgIndex)
     // 如果按下回车但是没有内容就提示，并让输入框失去焦点，防止误触enter
     // input.blur()
     key.preventDefault()
@@ -76,9 +67,7 @@ input.addEventListener('focus', function () {
 })
 // 点击表情盒子显示
 emojiIcon.addEventListener('click', function () {
-  // console.log(emojiBox.style.visibility)
   if (emojiBox.style.visibility === 'hidden') {
-    // console.log('hidden变为visible')
     emojiBox.style.visibility = 'visible'
   }
   else if (emojiBox.style.visibility === 'visible') {
@@ -94,12 +83,10 @@ emojiBox.addEventListener('click', function (e) {
 // ws监听连接事件
 ws.onopen = (e) => {
   console.log('建立了连接')
-  console.log(imgIndex, loginName)
-  ws.send(JSON.stringify(userListItem))
+  // ws.send(JSON.stringify(userListItem))
 }
 // ws监听消息事件
 ws.onmessage = (msg) => {
-  // console.log(msg.data)
   let ms = JSON.parse(msg.data)
   let imgInde = ms.imgIndex
   createEleLi(false, ms.msg, imgInde, ms.from)
@@ -116,7 +103,7 @@ ws.onclose = () => {
 
 
 // Enter和btn都要发送消息，封装成函数
-function sendMsg (msg, loginName = '游客', imgIndex = '11') {
+function sendMsg (msg, loginName, imgIndex = '11') {
   if (msg === '') {
     nullInputDesc.style.display = 'block'
     return
@@ -128,8 +115,9 @@ function sendMsg (msg, loginName = '游客', imgIndex = '11') {
     imgIndex,
     time: formatTime()
   }
+  console.log(sendInfo)
   ws.send(JSON.stringify(sendInfo))
-  createEleLi(true, msg)
+  createEleLi(true, msg, imgIndex, loginName)
 }
 
 // 日期格式化函数
@@ -153,14 +141,14 @@ function formatTime () {
 }
 // 当接收到消息和发送消息后都创建li标签
 // 默认为我发的消息
-function createEleLi (me = false, msg = '', imgInde = 11, nickname) {
+function createEleLi (me, msg, imgInde, nickName) {
   const li = document.createElement('li')
   li.classList.add('message-item')
   let msgTime = formatTime()
   let template = `
   <div class="time" style="visibility:${msgTime ? 'visible' : 'hidden'}"><span>${msgTime}</span></div>
-  <div class="message-main ${me ? 'self' : ''}"><img width="36" height="36" src="./images/face/face${me ? imgIndex ?? '11' : imgInde}.webp" class="avatar">
-  <div class="nickName ${me ? 'my-name' : ''}">${nickname ?? loginName ?? '游客'}</div>
+  <div class="message-main ${me ? 'self' : ''}"><img width="36" height="36" src="./images/face/face${me ? imgIndex : imgInde}.webp" class="avatar">
+  <div class="nickName ${me ? 'my-name' : ''}">${me ? loginName : nickName}</div>
     <div class="content">
       <div class="text">${msg}</div>
     </div>
