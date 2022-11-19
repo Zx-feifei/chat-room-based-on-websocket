@@ -27,7 +27,7 @@ function formatTime () {
     let al = parseInt(h) * 60 + parseInt(m)
     // console.log(al)
     console.log(allM - al)
-    if (allM - al > 0) {
+    if (allM - al > 2) {
 
       return nowH + ':' + nowM
     }
@@ -44,8 +44,6 @@ function createEleLi (isMe, data) {
   li.classList.add('message-item')
   let nowTime = formatTime()
   let template = ''
-  // style="visibility:${msgTime ? 'visible' : 'hidden'}"
-
   if (data?.toGroup && !data?.toSystem && data?.to !== 'system') {
     template = `
   <div class="time" style="visibility:${nowTime ? 'visible' : 'hidden'}"><span>${nowTime}</span></div>

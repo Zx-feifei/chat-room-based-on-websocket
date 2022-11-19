@@ -46,6 +46,7 @@ ws.onopen = (e) => {
   data.toSystem = true
   data.from = loginUser.loginName
   data.to = 'system'
+  data.fromImgId = loginUser.imgId
   data.time = new Date().toLocaleString().split('/').join('-')
   ws.send(JSON.stringify(data))
 }
@@ -59,6 +60,19 @@ ws.onmessage = (msg) => {
   else if (ms.to === 'system' && ms.toSystem) {
     console.log('接收到了系统消息')
     createEleLi(false, ms)
+    loginUser.onlineUsers.push(ms)
+    const li = document.createElement('li')
+    li.setAttribute('class', 'session-list')
+    let temp = ` 
+    <div class="list-left">
+      <img width="42" height="42" alt="我的好友" src="./images/face/face${ms.fromImgId}.webp" class="avatar">
+    </div>
+    <div class="list-right">
+      <p class="name">${ms.from}</p> <span class="time">${new Date().toLocaleTimeString()}</span>
+      <p class="last-msg">按回车可以发送信息，还可以给我发送表情哟</p>
+    </div>`
+    li.innerHTML = temp
+    userList.appendChild(li)
   }
 }
 // ws监听异常事件
@@ -66,6 +80,4 @@ ws.onerror = (err) => {
   console.log('服务器异常', err)
   alert('异常断开了连接')
 }
-ws.onclose = () => {
-  alert('结束了连接')
-}
+//   
