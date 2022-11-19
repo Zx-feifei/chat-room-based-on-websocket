@@ -42,6 +42,7 @@ emojiBox.addEventListener('click', function (e) {
 })
 // ws监听连接事件
 ws.onopen = (e) => {
+  // 刚连接时将自身的相关信息发送给服务端
   const data = Object.assign({}, dataPacket)
   data.toSystem = true
   data.from = loginUser.loginName
@@ -53,6 +54,10 @@ ws.onopen = (e) => {
 // ws监听消息事件
 ws.onmessage = (msg) => {
   let ms = JSON.parse(msg.data)
+  // let onl = JSON.parse(ms.onlineUsers)
+  // console.log(onl)
+  // loginUser.onlineUsers = [...JSON.parse(ms.onlineUsers)]
+  // console.log(loginUser)
   // 不判断字符串是为了防止跟用户的名字冲突
   if (ms.toGroup && !ms.toSystem) {
     createEleLi(false, ms)
@@ -60,19 +65,21 @@ ws.onmessage = (msg) => {
   else if (ms.to === 'system' && ms.toSystem) {
     console.log('接收到了系统消息')
     createEleLi(false, ms)
-    loginUser.onlineUsers.push(ms)
-    const li = document.createElement('li')
-    li.setAttribute('class', 'session-list')
-    let temp = ` 
-    <div class="list-left">
-      <img width="42" height="42" alt="我的好友" src="./images/face/face${ms.fromImgId}.webp" class="avatar">
-    </div>
-    <div class="list-right">
-      <p class="name">${ms.from}</p> <span class="time">${new Date().toLocaleTimeString()}</span>
-      <p class="last-msg">按回车可以发送信息，还可以给我发送表情哟</p>
-    </div>`
-    li.innerHTML = temp
-    userList.appendChild(li)
+    userList.innerHTML = ''
+    loginUser.onlineUsers.forEach(user => {
+      const li = document.createElement('li')
+      li.setAttribute('class', 'session-list')
+      let temp = ` 
+      <div class="list-left">
+        <img width="42" height="42" alt="我的好友" src="./images/face/face${user.fromImgId}.webp" class="avatar">
+      </div>
+      <div class="list-right">
+        <p class="name">${user.from}</p> <span class="time">${new Date().toLocaleTimeString()}</span>
+        <p class="last-msg">按回车可以发送信息，还可以给我发送表情哟</p>
+      </div>`
+      li.innerHTML = temp
+      userList.appendChild(li)
+    })
   }
 }
 // ws监听异常事件
@@ -81,3 +88,4 @@ ws.onerror = (err) => {
   alert('异常断开了连接')
 }
 //   
+console.log(loginUser.onlineUsers)

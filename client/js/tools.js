@@ -17,7 +17,6 @@ function formatTime () {
   let [nowH, nowM] = d.split(':')
   let allM = parseInt(nowH) * 60 + parseInt(nowM)
   let s = ul.querySelectorAll('.time span')
-  console.log(s)
   // 之前没有发送过消息
   if (s.length === 0) {
     return nowH + ':' + nowM
@@ -26,9 +25,7 @@ function formatTime () {
     // 之前的时间
     let al = parseInt(h) * 60 + parseInt(m)
     // console.log(al)
-    console.log(allM - al)
     if (allM - al > 2) {
-
       return nowH + ':' + nowM
     }
     else {
