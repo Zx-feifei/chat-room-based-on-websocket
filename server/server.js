@@ -28,8 +28,13 @@ const server = ws.createServer(conn => {
     }
     else if (getInfo.msgType === 1) {
       onlineUser.push(getInfo)
+      getInfo.onlineUser = onlineUser.map(item => {
+        return item.from + '/-_-/' + item.fromImgId + '/-_-/' + item.time
+      }).join(',')
       broadcast(true, conn, getInfo)
+      console.log(getInfo)
     }
+
   })
 
 
@@ -39,11 +44,12 @@ const server = ws.createServer(conn => {
     // 关闭将当前连接通道移除
     let index = connectList.indexOf(conn)
     connectList.splice(index, 1)
-    console.log(onlineUser[index]?.from, '下线了')
-    console.log(onlineUser[index])
     const underLineUser = Object.assign({}, onlineUser.splice(index, 1)[0])
     underLineUser.msgType = 2
 
+    // getInfo.onlineUser = onlineUser.map(item => {
+    //   return item.from + '/-_-/' + item.fromImgId + '/-_-/' + item.time
+    // }).join(',')
     connectList.forEach(connect => {
       connect.sendText(JSON.stringify(underLineUser))
     })

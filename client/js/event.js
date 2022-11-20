@@ -50,7 +50,7 @@ ws.onopen = (e) => {
   data.from = loginUser.loginName
   data.to = 'system'
   data.fromImgId = loginUser.imgId
-  data.time = new Date().toLocaleString().split('/').join('-')
+  data.time = new Date().toLocaleTimeString().slice(0,5)
   data.msgType = 1
   ws.send(JSON.stringify(data))
 }
@@ -63,28 +63,37 @@ ws.onmessage = (msg) => {
   }
   // 1代表系统提示的消息
   else if (ms.msgType === 1) {
-    console.log('有人上线了')
+
     createEleLi(false, ms)
-    // userList.innerHTML = ''
-    // loginUser.onlineUsers.forEach(user => {
-    //   const li = document.createElement('li')
-    //   li.setAttribute('class', 'session-list')
-    //   let temp = ` 
-    //   <div class="list-left">
-    //     <img width="42" height="42" alt="我的好友" src="./images/face/face${user.fromImgId}.webp" class="avatar">
-    //   </div>
-    //   <div class="list-right">
-    //     <p class="name">${user.from}</p> <span class="time">${new Date().toLocaleTimeString()}</span>
-    //     <p class="last-msg">按回车可以发送信息，还可以给我发送表情哟</p>
-    //   </div>`
-    //   li.innerHTML = temp
-    //   userList.appendChild(li)
-    // })
+    if(ms.onlineUser) {
+      loginUser.onlineUsers = []
+      ms.onlineUser.split(',').forEach(item=>{
+        // let onlineU = {}
+        const onlineU = {}
+        const nameImgId = item.split('/-_-/')
+        onlineU.name = nameImgId[0]
+        onlineU.imgId = nameImgId[1]
+        onlineU.time = nameImgId[2]
+       loginUser.onlineUsers.push(onlineU)
+      })
+    }
+    createOrDeleteUser()
+    
   }
   // 2代表系统广播用户下线
   else if(ms.msgType === 2) {
+    ms.from
+    let index = loginUser.onlineUsers.findIndex((item=>{
+      return item.name === ms.from
+    }))
+
+    loginUser.onlineUsers.splice(index,1)
     createEleLi(false, ms)
+    console.log('有人下线了');
+    createOrDeleteUser()
   }
+  console.log(ms);
+
 }
 // ws监听异常事件
 ws.onerror = (err) => {

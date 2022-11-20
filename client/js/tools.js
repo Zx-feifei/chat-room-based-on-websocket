@@ -21,11 +21,14 @@ function formatTime () {
   if (s.length === 0) {
     return nowH + ':' + nowM
   } else {
+    // console.log('s的length不为0')
     let [h, m] = s[s.length - 1].innerHTML.split(':')
     // 之前的时间
     let al = parseInt(h) * 60 + parseInt(m)
-    // console.log(al)
+    // console.log(allM, al)
+    console.log(al)
     if (allM - al > 2) {
+      // console.log(nowH + ':' + nowM)
       return nowH + ':' + nowM
     }
     else {
@@ -73,3 +76,22 @@ function createEleLi (isMe, data) {
   ul.scrollTo(0, 999, 'smooth')
 }
 
+
+function createOrDeleteUser () {
+  userList.innerHTML = ''
+
+  loginUser.onlineUsers.forEach(user => {
+    const li = document.createElement('li')
+    li.setAttribute('class', 'session-list')
+    let temp = ` 
+    <div class="list-left">
+      <img width="42" height="42" alt="我的好友" src="./images/face/face${user.imgId}.webp" class="avatar">
+    </div>
+    <div class="list-right">
+      <p class="name">${user.name}</p> <span class="time">${user.time}</span>
+      <p class="last-msg">按回车可以发送信息，还可以给我发送表情哟</p>
+    </div>`
+    li.innerHTML = temp
+    userList.appendChild(li)
+  })
+}
