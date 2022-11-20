@@ -52,13 +52,14 @@ function createEleLi (isMe, data) {
   </div>
   `
   }
-
+  // msgType为2则说明是系统群发的某人上线
   else if (data.msgType === 1) {
     template = `
     <div class="time" style="margin-bottom:10px;"><strong
       style="color:rgb(222, 85, 85);font-weight: bold;">${data.from} </strong>于<strong style="color:rgb(69, 219, 69);margin-right:2px;font-weight: bold;margin-left:12px;">${data.time}</strong>上线
     </div>`
   }
+  // msgType为2则说明是系统群发的某人下线
   else if (data.msgType === 2) {
     template = `
     <div class="time" style="margin-bottom:10px;"><strong
