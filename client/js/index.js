@@ -1,6 +1,6 @@
 
 // 创建websocket对象
-const ws = new WebSocket('ws://localhost:8000')
+const ws = new WebSocket('ws://zx529.xyz:8000')
 // 获取输入框DOM
 const input = document.querySelector('.send-text textarea')
 // 获取发送按钮
