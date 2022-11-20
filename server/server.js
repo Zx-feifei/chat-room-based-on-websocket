@@ -19,22 +19,16 @@ let onlineUser = []
 const server = ws.createServer(conn => {
 
   connectList.push(conn)
-  let str = `房间来了第${connectList.length}个用户,当前共有${connectList.length}个用户在线`
-  console.log(str)
+  console.log(`当前共有${connectList.length}个用户在线`)
   // 监听消息事件
   conn.on('text', function (str) {
     let getInfo = JSON.parse(str)
-    console.log(getInfo.toGroup, getInfo.toSystem)
-    if (getInfo.to === 'group') {
+    if (getInfo.msgType === 0) {
       broadcast(false, conn, getInfo)
-      console.log('消息发送了')
     }
-    else if (getInfo.to === 'system') {
+    else if (getInfo.msgType === 1) {
       onlineUser.push(getInfo)
-      // getInfo.onlineUsers = JSON.stringify(onlineUser)
-      console.log(getInfo)
       broadcast(true, conn, getInfo)
-      console.log('系统收到了消息')
     }
   })
 
@@ -44,15 +38,15 @@ const server = ws.createServer(conn => {
     if (code == 1001) console.log('对方关闭了连接')
     // 关闭将当前连接通道移除
     let index = connectList.indexOf(conn)
-    // console.log('onlineUserList')
-    // console.log(onlineUser[index])
     connectList.splice(index, 1)
-    // let underlineUserInfo = Object.assign({}, onlineUser[index])
-    // underlineUserInfo.underline = true
-    // console.log(onlineUser[index])
-    // console.log(underlineUserInfo, '下线了')
-    // onlineUser.splice(index, 1)
-    // broadcast(false, undefined, underlineUserInfo)
+    console.log(onlineUser[index]?.from, '下线了')
+    console.log(onlineUser[index])
+    const underLineUser = Object.assign({}, onlineUser.splice(index, 1)[0])
+    underLineUser.msgType = 2
+
+    connectList.forEach(connect => {
+      connect.sendText(JSON.stringify(underLineUser))
+    })
   })
   // 监听异常事件
   conn.on('error', function (code) {

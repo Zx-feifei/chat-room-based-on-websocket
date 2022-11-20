@@ -25,9 +25,12 @@ const dataPacket = {
   fromImgId: '11',
   toImgId: '9999',
   msg: '',
+  // [0,1,2,3] 0代表个人发送的群发消息 1代表系统提示，xxx上线(所有人都会看到)，后续待开发
+  msgType: 0,
   toGroup: true,
   toSystem: false,
   time: ''
+
 }
 // 统一当前的登录信息
 const loginUser = {

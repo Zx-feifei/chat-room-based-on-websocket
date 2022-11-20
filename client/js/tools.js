@@ -41,7 +41,7 @@ function createEleLi (isMe, data) {
   li.classList.add('message-item')
   let nowTime = formatTime()
   let template = ''
-  if (data?.toGroup && !data?.toSystem && data?.to !== 'system') {
+  if (data.msgType === 0) {
     template = `
   <div class="time" style="visibility:${nowTime ? 'visible' : 'hidden'}"><span>${nowTime}</span></div>
   <div class="message-main ${isMe ? 'self' : ''}"><img width="36" height="36" src="./images/face/face${isMe ? loginUser.imgId : data.fromImgId}.webp" class="avatar">
@@ -53,10 +53,16 @@ function createEleLi (isMe, data) {
   `
   }
 
-  else if (data?.toSystem && data?.to === 'system') {
+  else if (data.msgType === 1) {
     template = `
     <div class="time" style="margin-bottom:10px;"><strong
       style="color:rgb(222, 85, 85);font-weight: bold;">${data.from} </strong>于<strong style="color:rgb(69, 219, 69);margin-right:2px;font-weight: bold;margin-left:12px;">${data.time}</strong>上线
+    </div>`
+  }
+  else if (data.msgType === 2) {
+    template = `
+    <div class="time" style="margin-bottom:10px;"><strong
+      style="color:rgb(222, 85, 85);font-weight: bold;">${data.from} </strong>下线了
     </div>`
   }
   li.innerHTML = template
