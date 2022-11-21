@@ -71,7 +71,6 @@ function createEleLi (isMe, data) {
   }
   li.innerHTML = template
   ul.appendChild(li)
-  input.value = ''
   // 让ul滚动到最底部
   ul.scrollTo(0, 999, 'smooth')
 }
